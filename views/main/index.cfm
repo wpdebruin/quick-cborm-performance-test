@@ -6,4 +6,5 @@
 	<li><a href="/main/invokeTest">Testing invoke vs evaluate vs ...</a></li>
 	<li><a href="/main/someObjects">Test qb vs cborm with a few objects</a></li>
 	<li><a href="/main/manyObjects">Test qb vs cborm with 3300 objects (WARNING: SLOW and lots of MEMORY needed)</a></li>
+	<li><a href="/main/objectsVsRetrieveQuery">Some performance numbers on objects and query retrieval</a></li>
 </ul>

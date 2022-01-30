@@ -8,72 +8,6 @@ component extends="coldbox.system.EventHandler" {
 	 * Default Action
 	 */
 	function index( event, rc, prc ) {
-		param rc.max=7;
-
-/*		var start = gettickcount();
-		getInstance("qCountry").with("cities.shops.employees").where( "id", "<=", rc.max ).get().each( (qCountry)=>{
-			writeOutput( "A COUNTRIES: " & qCountry.getName() & "<br>" )
-			countryCounter +=1;
-			qCountry.getCities().each( (qCity )=>{
-				cityCounter +=1;
-				qCity.getShops().each( (qShop)=>{
-					shopCounter +=1;
-					qShop.getEmployees().each( (qEmployee)=>{
-						employeeCounter +=1;
-						dummy=qEmployee.getName();
-					})
-				})
-			} )
-		} );
-		writedump("countryCounter #countryCounter#");
-		writedump("cityCounter #cityCounter#");
-		writedump("shopCounter #shopCounter#");
-		writedump("employeeCounter #employeeCounter#");
-		var TotalCount = countryCounter+cityCounter+shopCounter+employeeCounter;
-		writedump( "totalcounter #TotalCount#")
-		writedump("TIME quick #gettickcount()-start#");
-
-		var start = gettickcount();
-		var tempArr = [];
-		for (var i=1; i <= TotalCount ;i=i+1) {
-			tempArr.append(new models.tempModel());
-		}
-		tempArr.each( (item)=>{
-			var dummpy = item.getId();
-		});
-		writedump("generation of #totalcount# simple objects #gettickcount()-start#");
-
-		var start = gettickcount();
-//		var city = cityService.get(1);
-//		writedump(city);
-//		abort;
-		var countryCounter=0;
-		var cityCounter=0;
-		var shopCounter=0;
-		var employeeCounter=0;
-		countryService.list( max=rc.max, asQuery=false ).each( (hCountry)=>{
-			countryCounter +=1;
-			writeOutput( "COUNTRIES: " & hCountry.getName() & "<br>" )
-			for ( var hCity in  hCountry.getCities() ){
-				cityCounter +=1;
-				hCity.getShops().each( (hShop)=>{
-					shopCounter +=1;
-					hShop.getEmployees().each( ( hEmployee )=> {
-						employeeCounter +=1;
-						dummy = hEmployee.getName();
-					})
-				} )
-			}
-		} );
-		writedump("countryCounter #countryCounter#");
-		writedump("cityCounter #cityCounter#");
-		writedump("shopCounter #shopCounter#");
-		writedump("employeeCounter #employeeCounter#");
-		var TotalCount = countryCounter+cityCounter+shopCounter+employeeCounter;
-		writedump( "totalcounter #TotalCount#")
-		writedump("TIME CBORM #gettickcount()-start#");
-		event.setView( view="main/index", noLayout=true );
-***/
 	}
 
 	function basicTest( event, rc, prc ){
@@ -162,7 +96,50 @@ component extends="coldbox.system.EventHandler" {
 
 	}
 
-
+	function objectsVsRetrieveQuery(event, rc, prc){
+		param rc.max=300;
+		timeit("ORM list of 300 cities", ()=> {
+			hCities =cityService.list( max=rc.max, asQuery=false );
+		},1);
+		timeit("ORM list of 300 cities, no filter", ()=> {
+			hCities =cityService.list( asQuery=false );
+		},1);
+		timeit("dump 1 hCity", ()=> {
+			writedump(var=hcities[1], expand=false);
+		},1);
+		timeit("Quick list of 300 cities", ()=> {
+			oCities =getInstance("qCity").where("id","<=",rc.max).get()
+		},1);
+		timeit("Quick list of 300 cities, no filter", ()=> {
+			oCities =getInstance("qCity").get()
+		},1);
+		timeit("dump 1 oCity", ()=> {
+			writedump(var=oCities[1], expand=false);
+		},1);
+		timeit("quick list of 300 cities, retrievequery", ()=> {
+			cities =getInstance("qCity").retrieveQuery().get()
+		},1);
+		timeit("dump 1 city struct", ()=> {
+			writedump( var=cities[1], expand=false);
+		},1);
+		timeit( "creating 300 objects with 1ms delay", ()=> {
+			var myArr={};
+			for (var i=1; i<=300; i++){
+				var city= new models.tempModel()
+				city.setId(1);
+				city.setName("notSoRandomstring");
+				myArr.append(city);
+			}
+		},1);
+		timeit( "creating 300 EMPTY objects with 1ms delay", ()=> {
+			var myArr={};
+			for (var i=1; i<=300; i++){
+				var city= new models.tempModel()
+				myArr.append(city);
+			}
+		},1);
+		event.noRender()
+	}
 
 	/**
 	 * Relocation example

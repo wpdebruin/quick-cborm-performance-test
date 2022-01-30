@@ -6,6 +6,8 @@ component accessors="true" {
 
 	function init(){
 		variables.id = createUUID();
+		//artificial delay
+		sleep(1);
 		return this;
 	}
 
