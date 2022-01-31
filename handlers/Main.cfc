@@ -69,7 +69,7 @@ component extends="coldbox.system.EventHandler" {
 
 	function manyObjects( event, rc, prc ){
 		var max=30; // there are 30 countries, 300 cities, 600 shops and 2400 employees
-		timeit("cborm 24 nested employees", ()=>{
+		timeit("cborm 24oo nested employees", ()=>{
 			countryService.list( max=max, asQuery=false ).each( (hCountry)=>{
 				for ( var hCity in  hCountry.getCities() ){
 					hCity.getShops().each( (hShop)=>{
