@@ -99,45 +99,53 @@ component extends="coldbox.system.EventHandler" {
 	function objectsVsRetrieveQuery(event, rc, prc){
 		param rc.max=300;
 		timeit("ORM list of 300 cities", ()=> {
-			hCities =cityService.list( max=rc.max, asQuery=false );
+			var hCities =cityService.list( max=rc.max, asQuery=false );
+			hcities.each((item)=>{
+				dummy=item.getName();
+			})
 		},1);
 		timeit("ORM list of 300 cities, no filter", ()=> {
-			hCities =cityService.list( asQuery=false );
-		},1);
-		timeit("dump 1 hCity", ()=> {
-			writedump(var=hcities[1], expand=false);
+			var hCities =cityService.list( asQuery=false );
+			hcities.each((item)=>{
+				dummy=item.getName();
+			})
 		},1);
 		timeit("Quick list of 300 cities", ()=> {
-			oCities =getInstance("qCity").where("id","<=",rc.max).get()
+			var oCities =getInstance("qCity").where("id","<=",rc.max).get();
+			oCities.each((item)=>{
+				dummy=item.getName();
+			})
 		},1);
 		timeit("Quick list of 300 cities, no filter", ()=> {
-			oCities =getInstance("qCity").get()
-		},1);
-		timeit("dump 1 oCity", ()=> {
-			writedump(var=oCities[1], expand=false);
+			var oCities =getInstance("qCity").get();
+			oCities.each((item)=>{
+				dummy=item.getName();
+			})
 		},1);
 		timeit("quick list of 300 cities, retrievequery", ()=> {
-			cities =getInstance("qCity").retrieveQuery().get()
-		},1);
-		timeit("dump 1 city struct", ()=> {
-			writedump( var=cities[1], expand=false);
+			var cities =getInstance("qCity").retrieveQuery().get()
 		},1);
 		timeit( "creating 300 objects with 1ms delay", ()=> {
-			var myArr={};
+			var myArr=[];
 			for (var i=1; i<=300; i++){
-				var city= new models.tempModel()
+				var city= new models.tempModel();
 				city.setId(1);
 				city.setName("notSoRandomstring");
+				//myArr.append(city);
 				myArr.append(city);
 			}
+			myArr.each((item)=>{
+				dummy=item.getName();
+			})
 		},1);
 		timeit( "creating 300 EMPTY objects with 1ms delay", ()=> {
-			var myArr={};
+			var myArr=[];
 			for (var i=1; i<=300; i++){
 				var city= new models.tempModel()
 				myArr.append(city);
 			}
 		},1);
+
 		event.noRender()
 	}
 
